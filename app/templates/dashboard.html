@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+  <div class="mt-5">
+    <h2>Welcome, {{ user.email }}!</h2>
+    <a href="{{ url_for('auth.logout') }}" class="btn btn-danger mt-3">Logout</a>
+  </div>
+{% endblock %}

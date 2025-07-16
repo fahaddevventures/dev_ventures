@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}Add User - Dev Ventures{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center mt-5">
+  <div class="col-md-8">
+    <div class="card shadow-sm p-4">
+      <h3 class="text-center mb-4 text-primary">Add New User</h3>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      {% endwith %}
+
+      <form method="POST" action="{{ url_for('user.add_user') }}" novalidate>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="first_name" class="form-label">First Name</label>
+            <input type="text" name="first_name" id="first_name" class="form-control" required>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="last_name" class="form-label">Last Name</label>
+            <input type="text" name="last_name" id="last_name" class="form-control" required>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="email" class="form-label">Email</label>
+          <input type="email" name="email" id="email" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+          <label for="password" class="form-label">Password</label>
+          <input type="password" name="password" id="password" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+          <label for="contact" class="form-label">Contact</label>
+          <input type="text" name="contact" id="contact" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+          <label for="role" class="form-label">Role</label>
+          <select class="form-select" name="role" id="role" required>
+            <option value="admin">Admin</option>
+            <option value="team_lead">Team Lead</option>
+            <option value="employee" selected>Employee</option>
+            <option value="salesman">Salesman</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label for="profile_image_url" class="form-label">Profile Image URL</label>
+          <input type="url" name="profile_image_url" id="profile_image_url" class="form-control" placeholder="https://example.com/image.jpg">
+        </div>
+
+        <button type="submit" class="btn btn-success w-100">Add User</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  'use strict'
+  const forms = document.querySelectorAll('form')
+  Array.from(forms).forEach(form => {
+    form.addEventListener('submit', event => {
+      if (!form.checkValidity()) {
+        event.preventDefault()
+        event.stopPropagation()
+      }
+      form.classList.add('was-validated')
+    }, false)
+  })
+})()
+</script>
+{% endblock %}

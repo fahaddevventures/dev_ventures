@@ -1,0 +1,73 @@
+{% extends "base_dashboard.html" %}
+{% block title %}Upwork Jobs - Dev Ventures{% endblock %}
+
+{% block dashboard_content %}
+<h2 class="mb-4">Search Upwork Jobs</h2>
+
+<!-- Search Form -->
+<form id="job-search-form" class="row g-3 mb-4">
+  <div class="col-auto">
+    <input type="text" class="form-control" name="keyword" id="keyword" placeholder="Enter keyword..." required>
+  </div>
+  <div class="col-auto">
+    <button type="submit" class="btn btn-primary">Search</button>
+  </div>
+</form>
+
+<!-- Loading Spinner -->
+<div id="loading" class="text-center my-4" style="display: none;">
+  <div class="spinner-border text-primary" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+</div>
+
+<!-- Job Results -->
+<div id="job-results" class="row row-cols-1 row-cols-md-2 g-4"></div>
+
+<script>
+  const form = document.getElementById('job-search-form');
+  const loading = document.getElementById('loading');
+  const results = document.getElementById('job-results');
+
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    const keyword = document.getElementById('keyword').value.trim();
+    if (!keyword) return;
+
+    // Show loading
+    loading.style.display = 'block';
+    results.innerHTML = ''; // Clear previous
+
+    try {
+        console.log(keyword)
+      const res = await fetch(`/scraper/upwork-jobs?q=${encodeURIComponent(keyword)}`);
+      const data = await res.json();
+      loading.style.display = 'none';
+
+      if (data.success && data.jobs.length > 0) {
+        data.jobs.forEach(job => {
+          const card = document.createElement('div');
+          card.className = 'col';
+          card.innerHTML = `
+            <div class="card h-100 shadow-sm">
+              <div class="card-body">
+                <h5 class="card-title">${job.title}</h5>
+                <p class="card-text">${job.description?.substring(0, 150) || 'No description available.'}</p>
+                <p class="text-muted mb-0"><strong>Budget:</strong> $${job.budget || 'N/A'}</p>
+              </div>
+            </div>
+          `;
+          results.appendChild(card);
+        });
+      } else {
+        results.innerHTML = `<p class="text-danger">No jobs found.</p>`;
+      }
+    } catch (error) {
+      loading.style.display = 'none';
+      results.innerHTML = `<p class="text-danger">Error fetching jobs. Please try again.</p>`;
+      console.error(error);
+    }
+  });
+</script>
+{% endblock %}

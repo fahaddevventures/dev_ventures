@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block title %}Dashboard - Dev Ventures{% endblock %}
+
+{% block content %}
+
+
+<div class="dashboard-container">
+  <!-- Sidebar -->
+<aside class="sidebar">
+  <h5 class="text-center fw-bold mb-4">Dev Ventures</h5>
+  <nav class="nav flex-column">
+
+    <!-- Dashboard -->
+    <a href="{{ url_for('dashboard.index') }}" class="nav-link fw-bold">🏠 Dashboard</a>
+
+    <!-- Workspace -->
+    {% if current_user.role.name in ['admin', 'team_lead', 'employee'] %}
+      <a href="{{ url_for('dashboard.index') }}" class="nav-link fw-bold mt-2">📂 Workspace</a>
+      <div class="ms-3">
+        <a href="#" class="nav-link">Overview</a>
+        <a href="#" class="nav-link">Team</a>
+      </div>
+    {% endif %}
+
+    <!-- Projects -->
+    {% if current_user.role.name in ['admin', 'team_lead'] %}
+      <a href="{{ url_for('dashboard.index') }}" class="nav-link fw-bold mt-2">📁 Projects</a>
+      <div class="ms-3">
+        <a href="#" class="nav-link">All Projects</a>
+        <a href="#" class="nav-link">New Project</a>
+      </div>
+    {% endif %}
+
+    <!-- Jobs -->
+    {% if current_user.role.name in ['admin', 'salesman', 'team_lead'] %}
+      <a href="{{ url_for('dashboard.index') }}" class="nav-link fw-bold mt-2">💼 Jobs</a>
+      <div class="ms-3">
+        {% if current_user.role.value in ['admin', 'team_lead', 'salesman'] %}
+          <a href="{{ url_for('dashboard.scrape_upwork_jobs') }}" class="nav-link">Scrape Upwork Jobs</a>
+        {% endif %}
+
+        {% if current_user.role.name in ['admin', 'salesman'] %}
+          <a href="{{ url_for('upwork_job.create_upwork_job') }}" class="nav-link">Create Job</a>
+        {% endif %}
+
+        <!-- {% if current_user.role.name in ['admin', 'salesman'] %}
+          <a href="{{ url_for('dashboard.jobs') }}" class="nav-link">Search Jobs</a>
+        {% endif %} -->
+        {% if current_user.role.name in ['admin', 'salesman'] %}
+          <a href="{{ url_for('upwork_job.list_upwork_jobs') }}" class="nav-link">Upwork Jobs</a>
+        {% endif %}
+        
+      </div>
+    {% endif %}
+
+    <!-- Tasks -->
+    {% if current_user.role.name in ['admin', 'employee', 'team_lead'] %}
+      <a href="{{ url_for('dashboard.index') }}" class="nav-link fw-bold mt-2">✅ Tasks</a>
+      <div class="ms-3">
+        <a href="#" class="nav-link">My Tasks</a>
+        <a href="#" class="nav-link">Assign Task</a>
+      </div>
+    {% endif %}
+
+    <!-- Proposals -->
+    {% if current_user.role.name in ['admin', 'salesman'] %}
+      <a href="{{ url_for('dashboard.index') }}" class="nav-link fw-bold mt-2">📝 Proposals</a>
+      <div class="ms-3">
+        <a href="#" class="nav-link">Sent Proposals</a>
+        <a href="#" class="nav-link">Create Proposal</a>
+      </div>
+    {% endif %}
+
+  </nav>
+</aside>
+
+
+
+
+
+  <!-- Main Content Area -->
+  <div class="main-content-area">
+    <!-- Topbar -->
+    <header class="topbar d-flex justify-content-between align-items-center px-4 py-3 bg-light border-bottom" style="min-height: 64px;">
+
+      <div>
+        Welcome, {{ current_user.first_name }} <small class="text-muted">({{ current_user.role.name | capitalize }})</small>
+      </div>
+      <form method="POST" action="{{ url_for('auth.logout') }}">
+        <button type="submit" class="btn btn-outline-danger btn-sm">Logout</button>
+      </form>
+    </header>
+
+    <!-- Page Content -->
+    <main class="content">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      {% block dashboard_content %}
+      <h2>Welcome to your Dashboard</h2>
+      {% endblock %}
+    </main>
+  </div>
+</div>
+
+{% endblock %}

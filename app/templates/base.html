@@ -23,6 +23,8 @@
 
     <!-- DEFAULT CSS FILE -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- Your custom theme -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
 </head>
 
 <body>
@@ -31,7 +33,7 @@
     </header>
 
     <main>
-        <div class="container">
+        <div class="container-fluid px-0">
     <!-- {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
     {% for category, message in messages %}
